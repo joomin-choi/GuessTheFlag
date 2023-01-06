@@ -91,7 +91,12 @@ struct ContentView: View {
             }
             .padding()
         }
-        .alert(scoreTitle, isPresented: $showingScore) {Button("Continue", action: askQuestion)
+        .alert(scoreTitle, isPresented: $showingScore) {
+            if questionNumber < 10 {
+                Button("Continue", action: askQuestion)
+            } else {
+                Button("Restart", action: newGame)
+            }
         } message: {
             Text("Your score is \(score)")
         }
@@ -120,6 +125,14 @@ struct ContentView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
         questionNumber += 1
+    }
+    
+    func newGame() {
+        questionNumber = 0
+        questionsAsked = 0
+        score = 0
+        
+        askQuestion()
     }
 }
 

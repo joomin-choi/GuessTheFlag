@@ -10,6 +10,9 @@ import SwiftUI
 struct ContentView: View {
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    @State private var score = 0
+    @State private var questionNumber = 1
+    @State private var questionsAsked = 0
     
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     
@@ -73,9 +76,14 @@ struct ContentView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 Spacer()
+                
+                Text("Question:" + "\n" + "\(questionNumber)/10")
+                    .multilineTextAlignment(.center)
+                    .font(.title2)
+                
                 Spacer()
                 
-                Text("Score: ?")
+                Text("Score: \(score)")
                     .foregroundColor(.white)
                     .font(.title.bold())
                 
@@ -85,15 +93,24 @@ struct ContentView: View {
         }
         .alert(scoreTitle, isPresented: $showingScore) {Button("Continue", action: askQuestion)
         } message: {
-            Text("Your score is?")
+            Text("Your score is \(score)")
         }
     }
     
     func flagTapped(_ number: Int) {
-        if number == correctAnswer {
-            scoreTitle = "Correct"
+        if number == correctAnswer && questionNumber < 10 {
+            scoreTitle = "Correct!"
+            questionsAsked += 1
+            score += 1
+        } else if number != correctAnswer && questionNumber < 10 {
+            scoreTitle = "Wrong!" + "\n" + "The correct answer is \(countries[correctAnswer].uppercased())!"
+            questionsAsked += 1
+        } else if number == correctAnswer && questionNumber == 10 && questionsAsked < 10 {
+            scoreTitle = "Correct! Game Over!"
+        } else if number != correctAnswer && questionNumber == 10 && questionsAsked < 10 {
+            scoreTitle = "Wrong!" + "\n" + "The correct answer is \(countries[correctAnswer].uppercased())! Game Over!"
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Game over!"
         }
         
         showingScore = true
@@ -102,6 +119,7 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        questionNumber += 1
     }
 }
 

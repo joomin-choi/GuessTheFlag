@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var showsAlert = false
+    
     @State private var showingScore = false
     @State private var scoreTitle = ""
     @State private var score = 0
@@ -88,6 +90,22 @@ struct ContentView: View {
                     .font(.title.bold())
                 
                 Spacer()
+                
+                Button(action: {
+                    self.showsAlert.toggle()
+                }) {
+                    Text("New Game")
+                }
+                .alert(isPresented: self.$showsAlert) {
+                    Alert(
+                        title: Text("New Game"),
+                        message: Text("Are you sure you want to start a new game?"),
+                        primaryButton: .destructive(Text("New Game")) {
+                            newGame()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
             }
             .padding()
         }

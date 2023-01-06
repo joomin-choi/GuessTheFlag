@@ -9,9 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     @State var showsAlert = false
-    
     @State private var showingScore = false
-    @State private var scoreTitle = ""
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    
     @State private var score = 0
     @State private var questionNumber = 1
     @State private var questionsAsked = 0
@@ -114,31 +115,35 @@ struct ContentView: View {
             }
             .padding()
         }
-        .alert(scoreTitle, isPresented: $showingScore) {
+        .alert(alertTitle, isPresented: $showingScore) {
             if questionNumber < 10 {
-                Button("Continue", action: askQuestion)
+                Button("Next question", action: askQuestion)
             } else {
                 Button("Restart", action: newGame)
             }
         } message: {
-            Text("Your score is \(score)")
+            Text(alertMessage)
         }
     }
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer && questionNumber < 10 {
-            scoreTitle = "Correct!"
+            alertTitle = "Correct!"
+            alertMessage = "Good job!"
             questionsAsked += 1
             score += 1
         } else if number != correctAnswer && questionNumber < 10 {
-            scoreTitle = "Wrong!" + "\n" + "The correct answer is \(countries[correctAnswer].uppercased())!"
+            alertTitle = "Wrong!"
+            alertMessage = "The correct answer is \(countries[correctAnswer].uppercased())!"
             questionsAsked += 1
         } else if number == correctAnswer && questionNumber == 10 && questionsAsked < 10 {
-            scoreTitle = "Correct! Game Over!"
+            alertTitle = "Correct!"
+            alertMessage = "Game Over!" + "\n" + "Your final score is \(score)"
         } else if number != correctAnswer && questionNumber == 10 && questionsAsked < 10 {
-            scoreTitle = "Wrong!" + "\n" + "The correct answer is \(countries[correctAnswer].uppercased())! Game Over!"
+            alertTitle = "Wrong!"
+            alertMessage = "The correct answer is \(countries[correctAnswer].uppercased())!" + "\n" + "Game Over!" + "\n" + "Your final score is \(score)"
         } else {
-            scoreTitle = "Game over!"
+            alertTitle = "Game over!"
         }
         
         showingScore = true

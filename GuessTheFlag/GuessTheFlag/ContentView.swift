@@ -95,6 +95,11 @@ struct ContentView: View {
                     self.showsAlert.toggle()
                 }) {
                     Text("New Game")
+                        .foregroundColor(.red)
+                        .frame(maxWidth: 100)
+                        .padding(.vertical, 10)
+                        .background(.regularMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
                 .alert(isPresented: self.$showsAlert) {
                     Alert(
